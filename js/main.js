@@ -1,123 +1,74 @@
-/** Class representing a User */
-class User {
+/**
+ * Class representing a Warrior
+ */
+class Warrior {
 
   /**
-   * Create a user
-   * @param {string} firstname
-   * @param {string} lastname
-   * @param {string} country
-   * @param {number} age
-   * @param {string|string[]} payment_methods
+   * Create a Warrior
+   * @param {string} name
+   * @param {number} attack
+   * @param {number} hp
    */
-  constructor(firstname, lastname, country, age, payment_methods) {
-    this.firstname = firstname;
-    this.lastname = lastname;
-    this.country = country;
-    this.age = age;
-    this.payment_methods = payment_methods;
-    this.validator = new userValidator();
-    this.validator.checkAll(this.age, this.country, this.payment_methods);
+  constructor(name, attack, hp) {
+    this.name = name;
+    this.attack = attack;
+    this.hp = hp;
   }
 
   /**
-   * Make an alert of the firstname
+   * Fight another Warrior
+   * @param {Warrior} Guerrier
    */
-  alertFirstName() {
-    alert('Your firstname is ' + this.firstname);
+  fight(Warrior) {
+    Warrior.hp -= this.attack;
+    if (Warrior.hp < 0) {
+      Warrior.hp = 0;
+    }
+    alert(this.name + ' a infligé ' + this.attack + ' dégats à ' + Warrior.name + '.' + Warrior.name + ' a ' + Warrior.hp + ' pv');
   }
-
-  /**
-   * Make an alert of the lastname
-   */
-  alertLastName() {
-    alert('Your name is ' + this.lastname);
-  }
-
-  /**
-   * Make an alert of the Birth date
-   */
-  alertBirthDate() {
-    let date = new Date();
-    alert('Your birthyear is ' + (date.getFullYear() - this.age));
-  }
-
 }
 
-class userValidator {
+/**
+ * Class representing a Wizard
+ */
+class Wizard extends Warrior {
 
   /**
-   * Init validator rules
+   * Create a Wizard
+   * @param {string} name
+   * @param {number} attack
+   * @param {number} hp
+   * @param {number} power
    */
-  constructor() {
-    this.allowedCountry = ['FRANCE', 'ESPAGNE', 'ALLEMAGNE', 'ITALIE', 'SUISSE'];
-    this.allowedPaymentMethods = ['VISA', 'MASTERCARD', 'PAYPAL', 'CASH'];
-    this.minAge = 18;
-    this.accepptedPaymentMethods = [];
-    this.notAcceptedPaymentMethods = [];
+  constructor(name, attack, hp, power) {
+    super(name, attack, hp);
+    this.power = power;
   }
 
   /**
-   * Make an alert that say if user is allowed to stay here
-   * @param {number} age
+   * Spell that regen 20 hp
    */
-  checkAge(age) {
-    if (this.minAge > age) {
-      alert('You\'re a little kid, go away');
-    } else {
-      alert('It\'s ok, you are over or equal to ' + this.minAge);
+  heal() {
+    if (this.power >= 20) {
+      this.hp += 10;
+      this.power -= 20;
+      alert(this.name + ' s\'est soigné de 20 pv. ' + this.name + ' a ' + this.hp + ' pv.');
+    }
+    else {
+      alert(this.name + ' n\'a pas assez de magie pour se soigner, il passe son tour!');
     }
   }
-
-  /**
-   * Make an alert that say if the user has an allowed country
-   * @param {string} country
-   */
-  checkCountry(country) {
-    if (this.allowedCountry.indexOf(country.toUpperCase()) < 0) {
-      alert(country + ' isn\'t an allowed country');
-    } else {
-      alert(country + ' is an allowed Country ;)');
-    }
-  }
-
-  /**
-   * Alert the user allowed & not allowed payment methods
-   * @param {string|string[]} paymentMethods
-   */
-  checkPaymentMethods(paymentMethods) {
-    /* Cannot use "this" in forEach scope so put it in self const */
-    const self = this;
-    Array.from(paymentMethods).forEach(function (e) {
-      if (self.allowedPaymentMethods.indexOf(e.toUpperCase()) > -1) {
-        self.accepptedPaymentMethods.push(e);
-      } else {
-        self.notAcceptedPaymentMethods.push(e);
-      }
-    });
-    if (this.accepptedPaymentMethods.length > 0) {
-      alert('payment Methods allowed that you can use are: ' + this.accepptedPaymentMethods.join());
-    }
-    if (this.notAcceptedPaymentMethods.length > 0) {
-      alert('payment Methods forbidden that you cannot use are: ' + this.notAcceptedPaymentMethods.join());
-    }
-  }
-
-  /**
-   * Check user age, country and payment methods
-   * @param {number} age
-   * @param {string} country
-   * @param {string|string[]} payment_methods
-   */
-  checkAll(age, country, payment_methods) {
-    this.checkAge(age);
-    this.checkCountry(country);
-    this.checkPaymentMethods(payment_methods);
-  }
-
 }
 
-let user = new User('Pierre', 'Demailly', 'France', '20', ['mastercard', 'cash']);
+let gladiator = new Warrior('Gladiator', 20, 100);
+let garen = new Warrior('Garen', 35, 60);
+let gandalf = new Wizard('Gandalf', 30, 300, 40);
 
-user.alertFirstName();
-user.alertLastName();
-user.alertBirthDate();
+while (gandalf.hp > 0) {
+  gladiator.fight(gandalf);
+  gandalf.heal();
+  garen.fight(gandalf);
+  gandalf.heal();
+}
+
+alert(gandalf.name + ' est mort !!!!!!');
